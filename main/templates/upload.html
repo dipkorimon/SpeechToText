@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech to Text</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+ 
+</head>
+<body>
+  <div class="main">
+    <div class="header">
+      <!-- <h1>Speech to Text</h1> -->
+      <!-- <img src="{% static 'images/back.jpg' %}" alt=""> -->
+    </div>
+    <div class="info">
+      <div class="btn">
+        <button id="start-btn">Start Recording</button>
+        <button id="stop-btn" disabled>Stop Recording</button>
+      </div>
+      <div class="msg">
+        <p id="output">Your speech will appear here...</p>
+      </div>
+    </div>
+      <div class="popup-window">
+      <div class="middle">
+        <p id="details">Did you mean...?</p>
+      </div>
+      <div class="bottom">
+        <button id="close">Close</button>
+        <button id="proceed">Proceed</button>
+      </div>
+    </div>
+  </div>
+</body>
+{% comment %} <script> console.log("Test") </script> {% endcomment %}
+<script src="{% static "javascript/jquery-3.7.1.min.js" %}"></script>
+<script type="module" src="{% static 'javascript/script.js' %}"></script>
+</html>

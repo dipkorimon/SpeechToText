@@ -1,0 +1,139 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* flex-direction: column; */
+  height: 100vh;
+  gap: 20px;
+}
+
+.main .header {
+  display: flex;
+  flex-direction: column;
+}
+
+.main .header h1 {
+  font-size: 35px;
+  text-align: center;
+}
+
+.main .header img {
+  height: 200px;
+  width: 200px;
+}
+
+.main .btn {
+  display: flex;
+  gap: 10px;
+}
+
+.main .info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.main .btn #start-btn {
+  background: none;
+  border: none;
+  background-color: rgb(235, 183, 183);
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: rgb(229, 18, 46);
+}
+
+.main .btn #start-btn:hover {
+  background: none;
+  border: none;
+  background-color: rgb(233, 195, 195);
+  cursor: pointer;
+}
+
+.main .btn #stop-btn {
+  background: none;
+  border: none;
+  background-color: rgb(229, 18, 46);
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: white;
+}
+
+.main .btn #stop-btn:hover {
+  background: none;
+  border: none;
+  background-color: rgb(212, 23, 51);
+  cursor: pointer;
+}
+
+.main .msg {
+  padding: 10px;
+  border-radius: 5px;
+  background-color: rgb(238, 233, 233);
+}
+
+.main .msg p {
+  text-align: center;
+  font-size: 18px;
+}
+
+.main .popup-window {
+  width: 300px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+
+.main .popup-window .middle #details {
+  font-size: 18px;
+  text-align: center;
+}
+
+.main .popup-window .bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.main .popup-window .bottom #close {
+  background: none;
+  border: none;
+  background-color: rgb(235, 183, 183);
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: rgb(229, 18, 46);
+}
+
+.main .popup-window .bottom #close:hover {
+  background: none;
+  border: none;
+  background-color: rgb(233, 195, 195);
+  cursor: pointer;
+}
+
+.main .popup-window .bottom #proceed {
+  background: none;
+  border: none;
+  background-color: rgb(229, 18, 46);
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: white;
+}
+
+.main .popup-window .bottom #proceed:hover {
+  background: none;
+  border: none;
+  background-color: rgb(212, 23, 51);
+  cursor: pointer;
+}
