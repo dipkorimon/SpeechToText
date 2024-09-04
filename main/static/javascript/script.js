@@ -338,7 +338,7 @@ if (!SpeechRecognition) {
         // document.getElementById('output').textContent = `Did you mean ${final_answer}?`;
         $('.info').hide();
         $('.popup-window').show();
-        $('#output').text(`Did you mean ${final_answer}?`);
+        // $('#output').text(`Did you mean ${final_answer}?`);
         $('#details').text(`Did you mean ${final_answer}?`);
         // voice to text part
         const speak = () => {
@@ -356,12 +356,11 @@ if (!SpeechRecognition) {
         speak();
         $('#close').click(() => {
           $('.popup-window').hide();
+          $('.info').show();
         });
-        $('#proceed').keyup((event) => {
-          if (event.keyCode === 13) {
-            $('#proceed').click(() => {
-
-            });
+        $('#proceed').on('keyup', (event) => {
+          if (event.key === "Enter") {
+            window.location.href = "https://towardsdatascience.com/sqlalchemy-python-tutorial-79a577141a91";
           }
         });
       }
@@ -381,7 +380,7 @@ if (!SpeechRecognition) {
     $('#start-btn').prop('disabled', false);
     $('#stop-btn').prop('disabled', true);
     // document.getElementById('output').textContent = "Recognition stopped.";
-    // $('#output').text("Recognition stopped.");
+    $('#output').text("Recognition stopped.");
   };
 
   // recognition.start();
