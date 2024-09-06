@@ -328,6 +328,39 @@ if (!SpeechRecognition) {
           $('#start-btn').click();
         }, 1000);
       } else {
+        // sends speech to db
+        const getCookie = (name) => {
+          let cookieValue = null;
+          if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+              }
+            }
+          }
+          return cookieValue;
+        }
+
+        const csrftoken = getCookie('csrftoken');
+
+        $.ajax({
+          type: 'POST',
+          url: '/save-speech/',
+          headers: { 'X-CSRFToken': csrftoken },
+          data: {
+            'speech_text': final_answer,
+          },
+          success: (response) => {
+            console.log("Speech saved successfully: ", response);
+          },
+          error: (xhr, status, error) => {
+            console.error("Error saving speech: ", error);
+          }
+        })
+
         $('.info').hide();
         $('.popup-window').show();
         $('#details').text(`Did you mean ${final_answer}?`);

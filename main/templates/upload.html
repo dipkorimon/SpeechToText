@@ -22,6 +22,9 @@
       <div class="msg">
         <p id="output">Press the start button to speak.</p>
       </div>
+        <form id="speech-form" method="POST">
+          {% csrf_token %}
+        </form>
     </div>
       <div class="popup-window">
       <div class="middle">
