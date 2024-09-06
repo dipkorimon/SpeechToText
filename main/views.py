@@ -15,4 +15,9 @@ def save_speech(request):
     else:
       return JsonResponse({'error': 'No speech text received'}, status=400)
 
-  return render(request, 'upload.html')
+  elif request.method == 'GET':
+    speeches = Transcription.objects.all().values('text')
+    speech_list = list(speeches)
+    return render(request, "upload.html", {'speeches': speech_list})
+
+  return JsonResponse({'error': 'Invalid request method'}, status=405)
