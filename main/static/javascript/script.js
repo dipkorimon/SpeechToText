@@ -252,8 +252,6 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 $('.popup-window').hide();
 
 if (!SpeechRecognition) {
-  // document.getElementById('output').textContent = "Sorry, your browser does not support Speech Recognition.";
-  // document.getElementById('start-btn').disabled = true;
   $('#output').text("Sorry, your browser does not support Speech Recognition.");
   $('#start-btn').prop('disabled', true);
 } else {
@@ -266,7 +264,6 @@ if (!SpeechRecognition) {
 
   recognition.onstart = () => {
     console.log('Speech recognition started');
-    // document.getElementById('output').textContent = 'Listening...';
     $('#output').text('Listening...');
   };
 
@@ -306,14 +303,12 @@ if (!SpeechRecognition) {
         minimum_operation = dp[m][n];
         let matched_percentage = 100 - (minimum_operation / Math.max(m, n)) * 100;
         if (matched_percentage >= 75) {
-          // document.getElementById('output').textContent = `Did you mean ${transcript}?`;
           final_answer = preDefinedSentence;
           matchFound = true;
           break;
         }
       }
       if (!matchFound) {
-        // document.getElementById('output').textContent = "Please, speak again.";
         $('#output').text("Please, speak again.");
         // voice to text part
         const speakNotMatchFound = () => {
@@ -330,15 +325,11 @@ if (!SpeechRecognition) {
         };
         speakNotMatchFound();
         window.setTimeout( ()=> {
-          // window.location.reload();
-          // document.getElementById('start-btn').click();
           $('#start-btn').click();
         }, 1000);
       } else {
-        // document.getElementById('output').textContent = `Did you mean ${final_answer}?`;
         $('.info').hide();
         $('.popup-window').show();
-        // $('#output').text(`Did you mean ${final_answer}?`);
         $('#details').text(`Did you mean ${final_answer}?`);
         // voice to text part
         const speak = () => {
@@ -369,41 +360,30 @@ if (!SpeechRecognition) {
 
   recognition.onerror = (event) => {
     console.error('Error occurred: ' + event.error);
-    // document.getElementById('output').textContent = 'Error: ' + event.error;
     $('#output').text('Error: ' + event.error);
   };
 
   recognition.onend = () => {
     console.log('Speech recognition ended');
-    // document.getElementById('start-btn').disabled = false;
-    // document.getElementById('stop-btn').disabled =
     $('#start-btn').prop('disabled', false);
     $('#stop-btn').prop('disabled', true);
-    // document.getElementById('output').textContent = "Recognition stopped.";
     $('#output').text("Recognition stopped.");
   };
-
-  // recognition.start();
 
   $('#start-btn').on('click', () => {
     try {
       recognition.start();
-      // document.getElementById('output').textContent = "Listening...";
-      // document.getElementById('start-btn').disabled = true;
-      // document.getElementById('stop-btn').disabled = false;
       $('#output').text("Listening...");
       $('#start-btn').prop('disabled', true);
       $('#stop-btn').prop('disabled', false);
     } catch (err) {
       console.error('Error starting recognition: ', err);
-      // document.getElementById('output').textContent = 'Failed to start speech recognition. Error: ' + err.message;
       $('#output').text('Failed to start speech recognition. Error: ' + err.message);
     }
   });
 
   $('#stop-btn').on('click', () => {
     recognition.stop();
-    // document.getElementById('stop-btn').disabled = true;
     $('#stop-btn').prop('disabled', true);
   });
 }

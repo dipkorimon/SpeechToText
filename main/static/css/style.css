@@ -31,12 +31,18 @@
 .main .btn {
   display: flex;
   gap: 10px;
+  align-items: center;
+  justify-content: center;
 }
 
 .main .info {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  width: 300px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding: 10px;
+  border-radius: 5px;
 }
 
 .main .btn #start-btn {
@@ -85,6 +91,9 @@
 }
 
 .main .popup-window {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: 300px;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   padding: 10px;
