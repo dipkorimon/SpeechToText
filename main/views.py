@@ -12,7 +12,7 @@ def save_speech(request):
     if speech_text != "":
       Transcription.objects.create(text=speech_text)
 
-    is_match = False  
+    is_match = False
 
     # sentence matching with edit distance algorithm
     predefined_sentences = Sentences.objects.values_list('sentence', flat=True)
