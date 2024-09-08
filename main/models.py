@@ -6,3 +6,9 @@ class Transcription(models.Model):
 
   def __str__(self):
     return self.text
+
+class Sentences(models.Model):
+  sentence = models.TextField(max_length=500)
+
+  def __str__(self):
+    return self.sentence

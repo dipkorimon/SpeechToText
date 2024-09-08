@@ -361,23 +361,9 @@ if (!SpeechRecognition) {
           }
         });
 
-        $.ajax({
-          type: 'GET',
-          url: '/save-speech/',
-          success: (response) => {
-            console.log("Data retrieved successfully: ", response);
-            displaySpeechData(response);
-          },
-          error: (xhr, status, error) => {
-            console.error("Error fetching speech data: ", error);
-          }
-        });
-
-        const displaySpeechData = (speechData) => {
-          $('.info').hide();
-          $('.popup-window').show();
-          $('#details').html(`Did you mean ${speechData}?`);
-        }
+        // handle popup window
+        $('.info').hide();
+        $('.popup-window').show();
 
         // voice to text part
         const speak = () => {

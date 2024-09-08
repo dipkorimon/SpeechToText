@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 
 from main.models import Transcription
 
@@ -16,8 +15,7 @@ def save_speech(request):
       return JsonResponse({'error': 'No speech text received'}, status=400)
 
   elif request.method == 'GET':
-    speeches = Transcription.objects.all().values('text')
-    speech_list = list(speeches)
-    return render(request, "upload.html", {'speeches': speech_list})
+    speeches = Transcription.objects.last().text
+    return render(request, "upload.html", {'speeches': speeches})
 
   return JsonResponse({'error': 'Invalid request method'}, status=405)
