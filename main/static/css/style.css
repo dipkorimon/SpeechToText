@@ -146,3 +146,7 @@
   background-color: rgb(212, 23, 51);
   cursor: pointer;
 }
+
+.main #hidden {
+  display: none;
+}
