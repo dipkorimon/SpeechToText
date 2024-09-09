@@ -47,7 +47,7 @@ def save_speech(request):
         break
 
     if is_match:
-      return JsonResponse({'status': 'success', 'matched_sentence': final_answer})
+      return JsonResponse({'status': 'success', 'matched_sentence': final_answer, 'speech_text': speech_text})
     else:
       return JsonResponse({'status': 'fail', 'message': 'No matching sentence found.'})
 

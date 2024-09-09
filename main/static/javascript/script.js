@@ -8,7 +8,7 @@ if (!SpeechRecognition) {
 } else {
   const recognition = new SpeechRecognition();
   recognition.lang = 'en-US';
-  recognition.continuos = true;
+  recognition.continuous = true;
   recognition.interimResults = false;
 
   // console.log(recognition);
@@ -18,12 +18,12 @@ if (!SpeechRecognition) {
     $('#output').text('Listening...');
   };
 
+  // debugger
   recognition.onresult = (event) => {
     // console.log(event.results.length);
-    let final_answer;
     if (event.results && event.results.length > 0) {
       const transcript = event.results[0][0].transcript;
-      console.log(transcript);
+      console.log("Transcript: ", transcript);
 
       const getCookie = (name) => {
         let cookieValue = null;
@@ -46,31 +46,72 @@ if (!SpeechRecognition) {
       $.ajax({
         type: 'POST',
         url: '/save-speech/',
-        headers: { 'X-CSRFToken': csrftoken },
+        headers: {'X-CSRFToken': csrftoken},
         data: {
           'speech_text': transcript,
-        },
-        success: (response) => {
-          // debugger
-          // response.matched_sentence = undefined;
-          console.log("Speech saved successfully: ", response);
-          let text = "success";
-          // let matched_sentence =
-          checkMatch(text, response.matched_sentence);
-        },
-        error: (xhr, status, error) => {
-          console.error("Error saving speech: ", error);
         }
+      }).done((response) => {
+        if (response.status === 'success') {
+          $('.popup-window').show();
+          $('#details').text(`Did you mean ${response.matched_sentence}?`);
+          checkMatch(response.status, response.matched_sentence, response.speech_text);
+
+          // Initiate a second recognition for confirmation
+          const confirmationRecognition = new SpeechRecognition();
+          confirmationRecognition.lang = 'en-US';
+          confirmationRecognition.continuous = true;
+          confirmationRecognition.interimResults = false;
+
+          confirmationRecognition.onresult = (confirmEvent) => {
+            const confirmationText = confirmEvent.results[0][0].transcript.toLowerCase();
+            console.log("Confirmation Transcript: ", confirmationText);
+
+            if (confirmationText.includes("yes")) {
+              console.log("User confirmed the match");
+              $('#output').text("Hello World");
+              $('.popup-window').hide();
+              $('.info').show();
+              recognition.stop();
+            } else if (confirmationText.includes("no")) {
+              console.log("User rejected the match, restarting...");
+              $('#output').text("Please try again.");
+              $('.popup-window').hide();
+              $('.info').show();
+              recognition.start();
+            } else {
+              $('#output').text("Please confirm with 'yes' or 'no'.");
+              window.setTimeout(() => {
+                confirmationRecognition.start();
+              }, 1000);
+            }
+          };
+
+          confirmationRecognition.onerror = (error) => {
+            console.error('Error in confirmation recognition: ', error);
+            $('#output').text("Error: Please try confirming again.");
+            confirmationRecognition.start();
+          };
+
+          confirmationRecognition.onend = () => {
+            console.log('Confirmation recognition ended.');
+          };
+
+          confirmationRecognition.start();
+        }
+      }).fail((xhr, status, error) => {
+        console.error("Error saving speech: ", error);
+        $('#output').text("Error: Unable to process your input.");
       });
+
       // debugger
-      const checkMatch = (text, matched_sentence) => {
-        console.log(matched_sentence);
-        // let final_answer = matched_sentence;
-        if (text === "success") {
+      const checkMatch = (status, matched_sentence, speech_text) => {
+        if (status === "success") {
+          console.log(matched_sentence);
           // handle popup window
           $('.info').hide();
           $('.popup-window').show();
           $('#details').text(`Did you mean ${matched_sentence}?`);
+          $('#voice-output').text('Listening...');
 
           // voice to text part
           const speak = () => {
@@ -85,17 +126,16 @@ if (!SpeechRecognition) {
               $('#output').text("Your browser does not support speech synthesis");
             }
           };
+
           speak();
+
           $('#close').click(() => {
+            recognition.stop();
             $('.popup-window').hide();
             $('.info').show();
           });
-          $('#proceed').on('keyup', (event) => {
-            if (event.key === "Enter") {
-              window.location.href = "";
-            }
-          });
         } else {
+          // debugger
           $('#output').text("Please, speak again.");
           // voice to text part
           const speakNotMatchFound = () => {
@@ -110,14 +150,16 @@ if (!SpeechRecognition) {
               $('#output').text("Your browser does not support speech synthesis");
             }
           };
+
           speakNotMatchFound();
+
           window.setTimeout(() => {
             $('#start-btn').click();
           }, 1000);
         }
-      }
+      };
     }
-  };
+};
 
   recognition.onerror = (event) => {
     console.error('Error occurred: ' + event.error);

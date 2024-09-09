@@ -95,7 +95,7 @@
   flex-direction: column;
   gap: 10px;
   width: 300px;
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0 5px 15px;
   padding: 10px;
   border-radius: 5px;
 }
@@ -116,23 +116,6 @@
 .main .popup-window .bottom #close {
   background: none;
   border: none;
-  background-color: rgb(235, 183, 183);
-  padding: 10px;
-  border-radius: 5px;
-  font-weight: bold;
-  color: rgb(229, 18, 46);
-}
-
-.main .popup-window .bottom #close:hover {
-  background: none;
-  border: none;
-  background-color: rgb(233, 195, 195);
-  cursor: pointer;
-}
-
-.main .popup-window .bottom #proceed {
-  background: none;
-  border: none;
   background-color: rgb(229, 18, 46);
   padding: 10px;
   border-radius: 5px;
@@ -140,13 +123,17 @@
   color: white;
 }
 
-.main .popup-window .bottom #proceed:hover {
+.main .popup-window .bottom #close:hover {
   background: none;
   border: none;
   background-color: rgb(212, 23, 51);
   cursor: pointer;
 }
 
-.main #hidden {
-  display: none;
+.main .popup-window .bottom #voice-output {
+  font-size: 18px;
+  text-align: center;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: rgb(238, 233, 233);
 }
