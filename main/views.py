@@ -19,27 +19,27 @@ def save_speech(request):
     # print(predefined_sentences)
     for predefined_sentence in predefined_sentences:
       predefined_sentence = predefined_sentence.lower()
-      m, n = len(speech_text), len(predefined_sentence)
+      speech_text_length, predefined_sentence_length = len(speech_text), len(predefined_sentence)
 
-      if m == 0 or n == 0:
+      if speech_text_length == 0 or predefined_sentence_length == 0:
         continue
 
-      dp = [[0] * (n + 1) for _ in range(m + 1)]
+      dp = [[0] * (predefined_sentence_length + 1) for _ in range(speech_text_length + 1)]
 
-      for i in range(m + 1):
-        dp[i][0] = i
-      for j in range(n + 1):
-        dp[0][j] = j
+      for speech_index in range(speech_text_length + 1):
+        dp[speech_index][0] = speech_index
+      for predefined_index in range(predefined_sentence_length + 1):
+        dp[0][predefined_index] = predefined_index
 
-      for i in range(1, m + 1):
-        for j in range(1, n + 1):
-          if speech_text[i - 1] == predefined_sentence[j - 1]:
-            dp[i][j] = dp[i - 1][j - 1]
+      for speech_index in range(1, speech_text_length + 1):
+        for predefined_index in range(1, predefined_sentence_length + 1):
+          if speech_text[speech_index - 1] == predefined_sentence[predefined_index - 1]:
+            dp[speech_index][predefined_index] = dp[speech_index - 1][predefined_index - 1]
           else:
-            dp[i][j] = 1 + min(dp[i][j - 1], dp[i - 1][j], dp[i - 1][j - 1])
+            dp[speech_index][predefined_index] = 1 + min(dp[speech_index][predefined_index - 1], dp[speech_index - 1][predefined_index], dp[speech_index - 1][predefined_index - 1])
 
-      minimum_operation = dp[m][n]
-      matched_percentage = 100 - (minimum_operation / max(m, n)) * 100
+      minimum_operation = dp[speech_text_length][predefined_sentence_length]
+      matched_percentage = 100 - (minimum_operation / max(speech_text_length, predefined_sentence_length)) * 100
 
       if matched_percentage >= 75:
         is_match = True

@@ -77,6 +77,7 @@ if (!SpeechRecognition) {
               $('#output').text("Please try again.");
               $('.popup-window').hide();
               $('.info').show();
+
               const speakNotMatchFound = () => {
                 if ('speechSynthesis' in window) {
                   const utterance = new SpeechSynthesisUtterance("Please, speak again.");
