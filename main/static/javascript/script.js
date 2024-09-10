@@ -51,10 +51,10 @@ if (!SpeechRecognition) {
           'speech_text': transcript,
         }
       }).done((response) => {
+        checkMatch(response.status, response.matched_sentence, response.speech_text);
         if (response.status === 'success') {
           $('.popup-window').show();
           $('#details').text(`Did you mean ${response.matched_sentence}?`);
-          checkMatch(response.status, response.matched_sentence, response.speech_text);
 
           // Initiate a second recognition for confirmation
           const confirmationRecognition = new SpeechRecognition();
@@ -77,6 +77,20 @@ if (!SpeechRecognition) {
               $('#output').text("Please try again.");
               $('.popup-window').hide();
               $('.info').show();
+              const speakNotMatchFound = () => {
+                if ('speechSynthesis' in window) {
+                  const utterance = new SpeechSynthesisUtterance("Please, speak again.");
+                  utterance.lang = 'en-US';
+                  utterance.pitch = 1;
+                  utterance.rate = 1;
+                  utterance.volume = 1;
+                  window.speechSynthesis.speak(utterance);
+                } else {
+                  $('#output').text("Your browser does not support speech synthesis");
+                }
+              };
+
+              speakNotMatchFound();
               recognition.start();
             } else {
               $('#output').text("Please confirm with 'yes' or 'no'.");
@@ -138,6 +152,7 @@ if (!SpeechRecognition) {
           // debugger
           $('#output').text("Please, speak again.");
           // voice to text part
+          recognition.stop();
           const speakNotMatchFound = () => {
             if ('speechSynthesis' in window) {
               const utterance = new SpeechSynthesisUtterance("Please, speak again.");
