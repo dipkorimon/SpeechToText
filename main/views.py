@@ -5,7 +5,7 @@ from main.models import Sentences, Transcription
 from fuzzywuzzy import fuzz
 
 # View function to handle speech saving and matching
-def process_speech(request):
+def save_speech(request):
   final_answer = ""
   if request.method == 'POST':
     # Get the speech text from the POST request and convert it to lowercase

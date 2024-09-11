@@ -21,5 +21,5 @@ from main import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('process_speech/', views.process_speech, name='process_speech'),
+    path('save_speech/', views.save_speech, name='save_speech'),
 ]

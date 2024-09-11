@@ -46,7 +46,7 @@ if (!SpeechRecognition) {
       // Send the transcript to the server
       $.ajax({
         type: 'POST',
-        url: '/save-speech/',
+        url: '/save_speech/',
         headers: {'X-CSRFToken': csrftoken},
         data: {
           'speech_text': transcript,
@@ -83,7 +83,7 @@ if (!SpeechRecognition) {
               // Function to speak a message if the response is rejected by user
               const speakRejectedInput = () => {
                 if ('speechSynthesis' in window) {
-                  const utterance = new SpeechSynthesisUtterance("Please, speak again.");
+                  const utterance = new SpeechSynthesisUtterance("Please, try another sentence.");
                   utterance.lang = 'en-US';
                   utterance.pitch = 1;
                   utterance.rate = 1;
