@@ -76,7 +76,7 @@ if (!SpeechRecognition) {
               confirmationRecognition.stop();
             } else if (confirmationText.includes("no")) {
               console.log("User rejected the match, restarting...");
-              $('#output').text("Please try again.");
+              $('#output').text("Please try another sentence.");
               $('.popup-window').hide();
               $('.info').show();
 
