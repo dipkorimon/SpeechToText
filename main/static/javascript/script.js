@@ -65,15 +65,15 @@ if (!SpeechRecognition) {
 
           // Event handler for confirmation results
           confirmationRecognition.onresult = (confirmEvent) => {
-            const confirmationText = confirmEvent.results[0][0].transcript.toLowerCase();
+            let confirmationText = confirmEvent.results[0][0].transcript.toLowerCase();
             console.log("Confirmation Transcript: ", confirmationText);
 
             if (confirmationText.includes("yes")) {
               console.log("User confirmed the match");
-              $('#output').text("Hello World");
-              $('.popup-window').hide();
-              $('.info').show();
+              $('#details').text("Hello World");
+              $('#voice-output').hide();
               recognition.stop();
+              confirmationRecognition.stop();
             } else if (confirmationText.includes("no")) {
               console.log("User rejected the match, restarting...");
               $('#output').text("Please try again.");
@@ -129,7 +129,7 @@ if (!SpeechRecognition) {
       // Function to check the match and handle the response
       const checkMatch = (status, matched_sentence, speech_text) => {
         if (status === "success") {
-          console.log(matched_sentence);
+          console.log("Matched Sentence: ", matched_sentence);
           $('.info').hide();
           $('.popup-window').show();
           $('#details').text(`Did you mean ${matched_sentence}?`);
