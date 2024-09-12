@@ -70,10 +70,10 @@ if (!SpeechRecognition) {
 
             if (confirmationText.includes("yes")) {
               console.log("User confirmed the match");
-              $('#details').text("Hello World");
-              $('#voice-output').hide();
               recognition.stop();
               confirmationRecognition.stop();
+              $('#details').text("Hello World");
+              $('#voice-output').hide();
             } else if (confirmationText.includes("no")) {
               console.log("User rejected the match, restarting...");
               $('#output').text("Please try another sentence.");
