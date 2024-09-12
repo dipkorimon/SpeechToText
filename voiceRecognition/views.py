@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from main.models import Sentences, Transcription
+from voiceRecognition.models import Sentences, Transcription
 from fuzzywuzzy import fuzz
 
 # View function to handle speech saving and matching
