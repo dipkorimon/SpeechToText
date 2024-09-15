@@ -67,14 +67,17 @@ if (!SpeechRecognition) {
           confirmationRecognition.onresult = (confirmEvent) => {
             let confirmationText = confirmEvent.results[0][0].transcript.toLowerCase();
             console.log("Confirmation Transcript: ", confirmationText);
-
             if (confirmationText.includes("yes")) {
+              console.time("Response time for yes");
+              console.timeEnd("Response time for yes");
               console.log("User confirmed the match");
-              recognition.stop();
-              confirmationRecognition.stop();
+              recognition.abort();
+              confirmationRecognition.abort();
               $('#details').text("Hello World");
               $('#voice-output').hide();
             } else if (confirmationText.includes("no")) {
+              console.time("Response time for no");
+              console.timeEnd("Response time for no");
               console.log("User rejected the match, restarting...");
               $('#output').text("Please try another sentence.");
               $('.popup-window').hide();
@@ -123,8 +126,10 @@ if (!SpeechRecognition) {
         }
       }).fail((xhr, status, error) => {
         console.error("Error saving speech: ", error);
+        recognition.stop();
         $('#output').text("Error: Unable to process your input.");
       });
+
 
       // Function to check the match and handle the response
       const checkMatch = (status, matched_sentence, speech_text) => {
