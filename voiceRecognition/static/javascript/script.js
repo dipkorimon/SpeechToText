@@ -28,6 +28,7 @@ if (!SpeechRecognition) {
       const transcript = event.results[0][0].transcript;
       console.log("Transcript: ", transcript);
 
+      // Function to get the CSRF token from cookies
       const getCookie = (name) => {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -45,25 +46,27 @@ if (!SpeechRecognition) {
 
       const csrftoken = getCookie('csrftoken');
 
-      // Send the transcript to the server
+      // Send the transcript to the server via AJAX
       $.ajax({
         type: 'POST',
         url: '/save_speech/',
         headers: { 'X-CSRFToken': csrftoken },
         data: { 'speech_text': transcript }
       }).done((response) => {
-        recognition.stop();
+        recognition.stop(); // Stop the initial recognition
         checkMatch(response.status, response.matched_sentence, response.speech_text);
+
         if (response.status === 'success') {
           $('.popup-window').show();
           $('#details').text(`Did you mean ${response.matched_sentence}?`);
 
-          // Initiate a second recognition for confirmation
+          // Create a new instance for confirmation recognition
           const confirmationRecognition = new SpeechRecognition();
           confirmationRecognition.lang = 'en-US';
           confirmationRecognition.continuous = true;
           confirmationRecognition.interimResults = false;
 
+          // Event handler for confirmation recognition results
           confirmationRecognition.onresult = (confirmEvent) => {
             let confirmationText = confirmEvent.results[0][0].transcript.toLowerCase();
             console.log("Confirmation Transcript: ", confirmationText);
@@ -71,7 +74,6 @@ if (!SpeechRecognition) {
 
             if (confirmationText.includes("yes")) {
               console.log("User confirmed the match");
-              // confirmationRecognition.stop();
               $('#details').text("Hello World");
               $('#voice-output').hide();
             } else if (confirmationText.includes("no")) {
@@ -80,7 +82,7 @@ if (!SpeechRecognition) {
               $('.popup-window').hide();
               $('.info').show();
 
-              // Function to speak a message if the response is rejected by user
+              // Function to speak a message if the response is rejected
               const speakRejectedInput = () => {
                 if ('speechSynthesis' in window) {
                   const utterance = new SpeechSynthesisUtterance("Please, try another sentence.");
@@ -113,7 +115,6 @@ if (!SpeechRecognition) {
           confirmationRecognition.onerror = (error) => {
             console.error('Error in confirmation recognition: ', error);
             $('#output').text("Error: Please try confirming again.");
-            // confirmationRecognition.start();
           };
 
           confirmationRecognition.onend = () => {
@@ -127,6 +128,7 @@ if (!SpeechRecognition) {
         $('#output').text("Error: Unable to process your input.");
       });
 
+      // Function to check the match status from server response
       const checkMatch = (status, matched_sentence, speech_text) => {
         if (status === "success") {
           console.log("Matched Sentence: ", matched_sentence);
@@ -135,6 +137,7 @@ if (!SpeechRecognition) {
           $('#details').text(`Did you mean ${matched_sentence}?`);
           $('#voice-output').text('Listening...');
 
+          // Function to speak the matched sentence
           const speak = () => {
             if ('speechSynthesis' in window) {
               const utterance = new SpeechSynthesisUtterance("Did you mean " + matched_sentence);
@@ -150,6 +153,7 @@ if (!SpeechRecognition) {
 
           speak();
 
+          // Close button handler
           $('#close').click(() => {
             recognition.stop();
             $('.popup-window').hide();
@@ -159,6 +163,7 @@ if (!SpeechRecognition) {
           $('#output').text("Please, speak again.");
           recognition.stop();
 
+          // Function to speak a message if no match is found
           const speakNotMatchFound = () => {
             if ('speechSynthesis' in window) {
               const utterance = new SpeechSynthesisUtterance("Please, speak again.");
@@ -174,6 +179,7 @@ if (!SpeechRecognition) {
 
           speakNotMatchFound();
 
+          // Restart the recognition process after a delay
           setTimeout(() => {
             $('#start-btn').click();
           }, 1000);
@@ -182,11 +188,13 @@ if (!SpeechRecognition) {
     }
   };
 
+  // Error handler for recognition
   recognition.onerror = (event) => {
     console.error('Error occurred: ' + event.error);
     $('#output').text('Error: ' + event.error);
   };
 
+  // Event handler for when recognition ends
   recognition.onend = () => {
     isRecognitionActive = false;
     console.log('Speech recognition ended');
@@ -195,6 +203,7 @@ if (!SpeechRecognition) {
     $('#output').text("Recognition stopped.");
   };
 
+  // Start button click handler
   $('#start-btn').on('click', () => {
     if (!isRecognitionActive) {
       try {
@@ -209,6 +218,7 @@ if (!SpeechRecognition) {
     }
   });
 
+  // Stop button click handler
   $('#stop-btn').on('click', () => {
     if (isRecognitionActive) {
       recognition.stop();
