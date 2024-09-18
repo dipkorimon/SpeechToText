@@ -64,8 +64,6 @@ if (!SpeechRecognition) {
           confirmationRecognition.continuous = true;
           confirmationRecognition.interimResults = false;
 
-          let isConformationRecognition = true;
-
           confirmationRecognition.onresult = (confirmEvent) => {
             let confirmationText = confirmEvent.results[0][0].transcript.toLowerCase();
             console.log("Confirmation Transcript: ", confirmationText);
@@ -73,7 +71,7 @@ if (!SpeechRecognition) {
 
             if (confirmationText.includes("yes")) {
               console.log("User confirmed the match");
-              confirmationRecognition.stop();
+              // confirmationRecognition.stop();
               $('#details').text("Hello World");
               $('#voice-output').hide();
             } else if (confirmationText.includes("no")) {
