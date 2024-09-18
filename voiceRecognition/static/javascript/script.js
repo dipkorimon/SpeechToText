@@ -13,8 +13,11 @@ if (!SpeechRecognition) {
   recognition.continuous = true;
   recognition.interimResults = false;
 
+  let isRecognitionActive = false;
+
   // Event handler for when recognition starts
   recognition.onstart = () => {
+    isRecognitionActive = true;
     console.log('Speech recognition started');
     $('#output').text('Listening...');
   };
@@ -25,7 +28,6 @@ if (!SpeechRecognition) {
       const transcript = event.results[0][0].transcript;
       console.log("Transcript: ", transcript);
 
-      // Function to get the CSRF token from cookies
       const getCookie = (name) => {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -39,7 +41,7 @@ if (!SpeechRecognition) {
           }
         }
         return cookieValue;
-      }
+      };
 
       const csrftoken = getCookie('csrftoken');
 
@@ -47,11 +49,10 @@ if (!SpeechRecognition) {
       $.ajax({
         type: 'POST',
         url: '/save_speech/',
-        headers: {'X-CSRFToken': csrftoken},
-        data: {
-          'speech_text': transcript,
-        }
+        headers: { 'X-CSRFToken': csrftoken },
+        data: { 'speech_text': transcript }
       }).done((response) => {
+        recognition.stop();
         checkMatch(response.status, response.matched_sentence, response.speech_text);
         if (response.status === 'success') {
           $('.popup-window').show();
@@ -63,21 +64,19 @@ if (!SpeechRecognition) {
           confirmationRecognition.continuous = true;
           confirmationRecognition.interimResults = false;
 
-          // Event handler for confirmation results
+          let isConformationRecognition = true;
+
           confirmationRecognition.onresult = (confirmEvent) => {
             let confirmationText = confirmEvent.results[0][0].transcript.toLowerCase();
             console.log("Confirmation Transcript: ", confirmationText);
+            confirmationRecognition.stop();
+
             if (confirmationText.includes("yes")) {
-              console.time("Response time for yes");
-              console.timeEnd("Response time for yes");
               console.log("User confirmed the match");
-              recognition.abort();
-              confirmationRecognition.abort();
+              confirmationRecognition.stop();
               $('#details').text("Hello World");
               $('#voice-output').hide();
             } else if (confirmationText.includes("no")) {
-              console.time("Response time for no");
-              console.timeEnd("Response time for no");
               console.log("User rejected the match, restarting...");
               $('#output').text("Please try another sentence.");
               $('.popup-window').hide();
@@ -99,39 +98,37 @@ if (!SpeechRecognition) {
 
               speakRejectedInput();
               // Restart recognition after a delay if not currently recognizing
-              recognition.start();
+              setTimeout(() => {
+                if (!isRecognitionActive) {
+                  recognition.start();
+                }
+              }, 1000);
             } else {
               $('#output').text("Please confirm with 'yes' or 'no'.");
               // Restart confirmation recognition after a delay if not currently recognizing
-              window.setTimeout(() => {
+              setTimeout(() => {
                 confirmationRecognition.start();
               }, 1000);
             }
           };
 
-          // Event handler for errors during confirmation recognition
           confirmationRecognition.onerror = (error) => {
             console.error('Error in confirmation recognition: ', error);
             $('#output').text("Error: Please try confirming again.");
-            confirmationRecognition.start();
+            // confirmationRecognition.start();
           };
 
-          // Event handler for when confirmation recognition ends
           confirmationRecognition.onend = () => {
             console.log('Confirmation recognition ended.');
           };
 
-          // Start the confirmation recognition
           confirmationRecognition.start();
         }
       }).fail((xhr, status, error) => {
         console.error("Error saving speech: ", error);
-        recognition.stop();
         $('#output').text("Error: Unable to process your input.");
       });
 
-
-      // Function to check the match and handle the response
       const checkMatch = (status, matched_sentence, speech_text) => {
         if (status === "success") {
           console.log("Matched Sentence: ", matched_sentence);
@@ -140,7 +137,6 @@ if (!SpeechRecognition) {
           $('#details').text(`Did you mean ${matched_sentence}?`);
           $('#voice-output').text('Listening...');
 
-          // Function to speak a message if similar sentence found
           const speak = () => {
             if ('speechSynthesis' in window) {
               const utterance = new SpeechSynthesisUtterance("Did you mean " + matched_sentence);
@@ -156,18 +152,15 @@ if (!SpeechRecognition) {
 
           speak();
 
-          // Close button handler
           $('#close').click(() => {
             recognition.stop();
             $('.popup-window').hide();
             $('.info').show();
           });
         } else {
-          // Handle no match found
           $('#output').text("Please, speak again.");
           recognition.stop();
 
-          // Function to speak a message if no similar sentence found
           const speakNotMatchFound = () => {
             if ('speechSynthesis' in window) {
               const utterance = new SpeechSynthesisUtterance("Please, speak again.");
@@ -183,8 +176,7 @@ if (!SpeechRecognition) {
 
           speakNotMatchFound();
 
-          // Restart the recognition after a delay if not currently recognizing
-          window.setTimeout(() => {
+          setTimeout(() => {
             $('#start-btn').click();
           }, 1000);
         }
@@ -192,36 +184,37 @@ if (!SpeechRecognition) {
     }
   };
 
-  // Event handler for errors during recognition
   recognition.onerror = (event) => {
     console.error('Error occurred: ' + event.error);
     $('#output').text('Error: ' + event.error);
   };
 
-  // Event handler for when recognition ends
   recognition.onend = () => {
+    isRecognitionActive = false;
     console.log('Speech recognition ended');
     $('#start-btn').prop('disabled', false);
     $('#stop-btn').prop('disabled', true);
     $('#output').text("Recognition stopped.");
   };
 
-  // Start button handler
   $('#start-btn').on('click', () => {
-    try {
-      recognition.start();
-      $('#output').text("Listening...");
-      $('#start-btn').prop('disabled', true);
-      $('#stop-btn').prop('disabled', false);
-    } catch (err) {
-      console.error('Error starting recognition: ', err);
-      $('#output').text('Failed to start speech recognition. Error: ' + err.message);
+    if (!isRecognitionActive) {
+      try {
+        recognition.start();
+        $('#output').text("Listening...");
+        $('#start-btn').prop('disabled', true);
+        $('#stop-btn').prop('disabled', false);
+      } catch (err) {
+        console.error('Error starting recognition: ', err);
+        $('#output').text('Failed to start speech recognition. Error: ' + err.message);
+      }
     }
   });
 
-  // Stop button handler
   $('#stop-btn').on('click', () => {
-    recognition.stop();
+    if (isRecognitionActive) {
+      recognition.stop();
+    }
     $('#stop-btn').prop('disabled', true);
   });
 }
