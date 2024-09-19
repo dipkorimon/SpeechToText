@@ -16,11 +16,18 @@ if (!SpeechRecognition) {
   let isRecognitionActive = false;
 
   // Event handler for when recognition starts
-  recognition.onstart = () => {
+  // recognition.onstart = () => {
+  //   isRecognitionActive = true;
+  //   console.log('Speech recognition started');
+  //   $('#output').text('Listening...');
+  // };
+
+  $('start-btn').on('click', () => {
+    recognition.start();
     isRecognitionActive = true;
-    console.log('Speech recognition started');
+    console.log("Speech recognition started");
     $('#output').text('Listening...');
-  };
+  })
 
   // Event handler for when recognition results are available
   recognition.onresult = (event) => {
@@ -50,8 +57,8 @@ if (!SpeechRecognition) {
       $.ajax({
         type: 'POST',
         url: '/save_speech/',
-        headers: { 'X-CSRFToken': csrftoken },
-        data: { 'speech_text': transcript }
+        headers: {'X-CSRFToken': csrftoken},
+        data: {'speech_text': transcript}
       }).done((response) => {
         recognition.stop(); // Stop the initial recognition
         checkMatch(response.status, response.matched_sentence, response.speech_text);
@@ -68,15 +75,15 @@ if (!SpeechRecognition) {
 
           // Event handler for confirmation recognition results
           confirmationRecognition.onresult = (confirmEvent) => {
-            let confirmationText = confirmEvent.results[0][0].transcript.toLowerCase();
+            let confirmationText = confirmEvent.results[0][0].transcript.trim().toLowerCase();
             console.log("Confirmation Transcript: ", confirmationText);
             confirmationRecognition.stop();
 
-            if (confirmationText.includes("yes")) {
+            if (confirmationText === "yes") {
               console.log("User confirmed the match");
               $('#details').text("Hello World");
               $('#voice-output').hide();
-            } else if (confirmationText.includes("no")) {
+            } else if (confirmationText === "no") {
               console.log("User rejected the match, restarting...");
               $('#output').text("Please try another sentence.");
               $('.popup-window').hide();
