@@ -16,18 +16,11 @@ if (!SpeechRecognition) {
   let isRecognitionActive = false;
 
   // Event handler for when recognition starts
-  // recognition.onstart = () => {
-  //   isRecognitionActive = true;
-  //   console.log('Speech recognition started');
-  //   $('#output').text('Listening...');
-  // };
-
-  $('start-btn').on('click', () => {
-    recognition.start();
+  recognition.onstart = () => {
     isRecognitionActive = true;
-    console.log("Speech recognition started");
+    console.log('Speech recognition started');
     $('#output').text('Listening...');
-  })
+  };
 
   // Event handler for when recognition results are available
   recognition.onresult = (event) => {
@@ -75,15 +68,15 @@ if (!SpeechRecognition) {
 
           // Event handler for confirmation recognition results
           confirmationRecognition.onresult = (confirmEvent) => {
-            let confirmationText = confirmEvent.results[0][0].transcript.trim().toLowerCase();
+            let confirmationText = confirmEvent.results[0][0].transcript.toLowerCase();
             console.log("Confirmation Transcript: ", confirmationText);
             confirmationRecognition.stop();
 
-            if (confirmationText === "yes") {
+            if (confirmationText.includes("yes")) {
               console.log("User confirmed the match");
               $('#details').text("Hello World");
               $('#voice-output').hide();
-            } else if (confirmationText === "no") {
+            } else if (confirmationText.includes("no")) {
               console.log("User rejected the match, restarting...");
               $('#output').text("Please try another sentence.");
               $('.popup-window').hide();
