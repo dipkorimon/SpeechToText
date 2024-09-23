@@ -58,7 +58,7 @@ if (!SpeechRecognition) {
 
         if (response.status === 'success') {
           $('.popup-window').show();
-          $('#details').text(`Did you mean ${response.matched_sentence}?`);
+          $('#details').text(`I heard: "${response.matched_sentence}". If that sounds correct, say "okay".`);
 
           // Create a new instance for confirmation recognition
           const confirmationRecognition = new SpeechRecognition();
@@ -72,7 +72,7 @@ if (!SpeechRecognition) {
             console.log("Confirmation Transcript: ", confirmationText);
             confirmationRecognition.stop();
 
-            if (confirmationText.includes("yes")) {
+            if (confirmationText.includes("okay")) {
               console.log("User confirmed the match");
               $('#details').text("Hello World");
               $('#voice-output').hide();
@@ -140,7 +140,7 @@ if (!SpeechRecognition) {
           // Function to speak the matched sentence
           const speak = () => {
             if ('speechSynthesis' in window) {
-              const utterance = new SpeechSynthesisUtterance("Did you mean " + matched_sentence);
+              const utterance = new SpeechSynthesisUtterance(`I heard: "${matched_sentence}". If that sounds correct, say "okay".`);
               utterance.lang = 'en-US';
               utterance.pitch = 1;
               utterance.rate = 1;
