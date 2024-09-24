@@ -43,8 +43,11 @@ jupyterlab_server==2.27.3
 Levenshtein==0.25.1
 MarkupSafe==2.1.5
 matplotlib-inline==0.1.7
+Metaphone==0.6
 mistune==3.0.2
 nbclient==0.10.0
+nbconvert==7.16.4
+nbformat==5.10.4
 nest-asyncio==1.6.0
 notebook_shim==0.2.4
 overrides==7.7.0

@@ -64,7 +64,7 @@ if (!SpeechRecognition) {
           const confirmationRecognition = new SpeechRecognition();
           confirmationRecognition.lang = 'en-US';
           confirmationRecognition.continuous = true;
-          confirmationRecognition.interimResults = false;
+          confirmationRecognition.interimResults = true;
 
           // Event handler for confirmation recognition results
           confirmationRecognition.onresult = (confirmEvent) => {
@@ -85,6 +85,7 @@ if (!SpeechRecognition) {
               // Function to speak a message if the response is rejected
               const speakRejectedInput = () => {
                 if ('speechSynthesis' in window) {
+                  window.speechSynthesis.cancel();
                   const utterance = new SpeechSynthesisUtterance("Please, try another sentence.");
                   utterance.lang = 'en-US';
                   utterance.pitch = 1;
@@ -140,6 +141,7 @@ if (!SpeechRecognition) {
           // Function to speak the matched sentence
           const speak = () => {
             if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel();
               const utterance = new SpeechSynthesisUtterance(`I heard: "${matched_sentence}". If that sounds correct, say "okay".`);
               utterance.lang = 'en-US';
               utterance.pitch = 1;
@@ -166,6 +168,7 @@ if (!SpeechRecognition) {
           // Function to speak a message if no match is found
           const speakNotMatchFound = () => {
             if ('speechSynthesis' in window) {
+              window.speechSynthesis.cancel();
               const utterance = new SpeechSynthesisUtterance("Please, speak again.");
               utterance.lang = 'en-US';
               utterance.pitch = 1;
