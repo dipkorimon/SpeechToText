@@ -73,6 +73,8 @@ if (!SpeechRecognition) {
             confirmationRecognition.stop();
 
             if (confirmationText.includes("okay")) {
+              confirmationRecognition.stop();
+              recognition.stop();
               console.log("User confirmed the match");
               $('#details').text("Hello World");
               $('#voice-output').hide();
